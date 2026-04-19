@@ -1,0 +1,5 @@
+{"start": 1776616563.851482, "end": 1776624285.286207, "duration_s": 7721.434725046158, "wins": 25, "losses": 37, "draws": 2, "reason": "user_stopped"}
+{"start": 1776624387.911051, "end": 1776624390.6121755, "duration_s": 2.701124429702759, "wins": 0, "losses": 0, "draws": 0, "reason": "user_stopped"}
+{"start": 1776624393.34533, "end": 1776624395.3571615, "duration_s": 2.011831521987915, "wins": 0, "losses": 0, "draws": 0, "reason": "user_stopped"}
+{"start": 1776624397.9205852, "end": 1776624600.6873357, "duration_s": 202.76675057411194, "wins": 1, "losses": 0, "draws": 0, "reason": "user_stopped"}
+{"start": 1776624665.964687, "end": 1776625238.4230528, "duration_s": 572.4583656787872, "wins": 0, "losses": 0, "draws": 0, "reason": "crashed"}

@@ -1,0 +1,86 @@
+{
+  "__queue__": [
+    "belle"
+  ],
+  "shelly": {
+    "brawler": "shelly",
+    "push_until": 1200,
+    "trophies": 0,
+    "wins": 0,
+    "type": "trophies",
+    "automatically_pick": true,
+    "win_streak": 0
+  },
+  "bull": {
+    "brawler": "bull",
+    "push_until": 1200,
+    "trophies": 0,
+    "wins": 0,
+    "type": "trophies",
+    "automatically_pick": true,
+    "win_streak": 0
+  },
+  "jessie": {
+    "brawler": "jessie",
+    "push_until": 1200,
+    "trophies": 0,
+    "wins": 0,
+    "type": "trophies",
+    "automatically_pick": true,
+    "win_streak": 0
+  },
+  "rico": {
+    "brawler": "rico",
+    "push_until": 1200,
+    "trophies": 0,
+    "wins": 0,
+    "type": "trophies",
+    "automatically_pick": true,
+    "win_streak": 0
+  },
+  "colt": {
+    "brawler": "colt",
+    "push_until": 1200,
+    "trophies": 0,
+    "wins": 0,
+    "type": "trophies",
+    "automatically_pick": false,
+    "win_streak": 0
+  },
+  "surge": {
+    "brawler": "surge",
+    "push_until": 520,
+    "trophies": 511,
+    "wins": 0,
+    "type": "trophies",
+    "automatically_pick": false,
+    "win_streak": 0
+  },
+  "rt": {
+    "brawler": "rt",
+    "push_until": 1200,
+    "trophies": 403,
+    "wins": 0,
+    "type": "trophies",
+    "automatically_pick": false,
+    "win_streak": 0
+  },
+  "mortis": {
+    "brawler": "mortis",
+    "push_until": 1200,
+    "trophies": 0,
+    "wins": 0,
+    "type": "trophies",
+    "automatically_pick": true,
+    "win_streak": 0
+  },
+  "belle": {
+    "brawler": "belle",
+    "push_until": 1200,
+    "trophies": 382,
+    "wins": 0,
+    "type": "trophies",
+    "automatically_pick": false,
+    "win_streak": 0
+  }
+}
