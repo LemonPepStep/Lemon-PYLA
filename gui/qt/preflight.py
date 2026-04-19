@@ -14,25 +14,20 @@ MODEL_FILES = [
 ]
 
 
+# Common ADB ports per emulator. BlueStacks 4 uses 5555, BlueStacks 5 uses 5565.
+# LDPlayer cycles 5555 / 5557 / 5559... per instance. MEmu uses 21503.
 EMULATOR_PORTS = {
-    "LDPlayer":   "127.0.0.1:5555",
-    "BlueStacks": "127.0.0.1:5037",
-    "MEmu":       "127.0.0.1:21503",
+    "LDPlayer":   ["127.0.0.1:5555", "127.0.0.1:5557", "127.0.0.1:5559"],
+    "BlueStacks": ["127.0.0.1:5555", "127.0.0.1:5565", "127.0.0.1:5575", "127.0.0.1:5585"],
+    "MEmu":       ["127.0.0.1:21503", "127.0.0.1:21513"],
     "Others":     None,
 }
 
 
-def _adb_reachable(host_port: str, timeout_s: float = 3.0,
-                   reconnect: bool = True) -> tuple[bool, str]:
+def _adb_devices(timeout_s: float = 3.0) -> tuple[bool, str, list[str]]:
+    """Returns (ok, detail, connected_host_ports)."""
     adb = shutil.which("adb") or "adb"
     try:
-        if reconnect:
-            subprocess.run(
-                [adb, "connect", host_port],
-                timeout=timeout_s,
-                capture_output=True,
-                check=False,
-            )
         result = subprocess.run(
             [adb, "devices"],
             timeout=timeout_s,
@@ -41,17 +36,51 @@ def _adb_reachable(host_port: str, timeout_s: float = 3.0,
             text=True,
         )
     except FileNotFoundError:
-        return False, "adb binary not found on PATH"
+        return False, "adb binary not found on PATH", []
     except subprocess.TimeoutExpired:
-        return False, f"adb timed out contacting {host_port}"
+        return False, "adb timed out listing devices", []
     except Exception as e:
-        return False, f"adb error: {e}"
+        return False, f"adb error: {e}", []
 
+    connected: list[str] = []
     for line in (result.stdout or "").splitlines():
         line = line.strip()
-        if line.startswith(host_port) and re.search(r"\bdevice\b", line):
-            return True, "connected"
-    return False, f"no device at {host_port} (start your emulator)"
+        if not line or line.startswith("List of devices"):
+            continue
+        if re.search(r"\bdevice\b", line):
+            connected.append(line.split()[0])
+    return True, "ok", connected
+
+
+def _adb_reachable(host_ports: list[str], timeout_s: float = 3.0,
+                   reconnect: bool = True) -> tuple[bool, str]:
+    adb = shutil.which("adb") or "adb"
+    # First, see what's already connected — covers emulators that auto-register with adb
+    ok, detail, connected = _adb_devices(timeout_s)
+    if not ok:
+        return False, detail
+    for hp in host_ports:
+        if hp in connected:
+            return True, f"already connected at {hp}"
+    # If nothing is connected yet, optionally try to `adb connect` each candidate port
+    if reconnect:
+        for hp in host_ports:
+            try:
+                subprocess.run([adb, "connect", hp], timeout=timeout_s,
+                               capture_output=True, check=False)
+            except Exception:
+                continue
+        ok, detail, connected = _adb_devices(timeout_s)
+        if not ok:
+            return False, detail
+        for hp in host_ports:
+            if hp in connected:
+                return True, f"connected at {hp}"
+    # Last-ditch: if ANY device is connected (e.g. USB phone, port we don't know), accept it
+    if connected:
+        return True, f"using already-attached device {connected[0]}"
+    tried = ", ".join(host_ports)
+    return False, f"no device found — tried {tried} (is the emulator running with ADB enabled?)"
 
 
 def validate(queue_data: list[dict], emulator_name: str,
@@ -85,12 +114,12 @@ def validate(queue_data: list[dict], emulator_name: str,
 
     # Emulator reachability
     if not skip_adb:
-        port = EMULATOR_PORTS.get(emulator_name)
-        if port is None:
+        ports = EMULATOR_PORTS.get(emulator_name)
+        if ports is None:
             # "Others" — skip check, user knows what they're doing
             pass
         else:
-            ok, detail = _adb_reachable(port, reconnect=auto_reconnect)
+            ok, detail = _adb_reachable(ports, reconnect=auto_reconnect)
             if not ok:
                 problems.append(f"Emulator '{emulator_name}' unreachable: {detail}")
 
