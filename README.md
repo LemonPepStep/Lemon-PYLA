@@ -43,8 +43,8 @@
 
 ### Install
 ```bash
-git clone https://github.com/MrMuff1nn/PylaAI-OP.git
-cd PylaAI-OP
+git clone https://github.com/LemonPepStep/Lemon-PYLA.git
+cd Lemon-PYLA
 python setup.py install
 python main.py
 ```
